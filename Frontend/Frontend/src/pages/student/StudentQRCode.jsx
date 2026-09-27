@@ -1,0 +1,1 @@
+export default function StudentQRCode(){return <div className="page"><h1>🎫 QR Boarding Pass</h1><div className="card"><h2>UNISHUT-TRIP-2026</h2><p>Passenger: Student User</p><div style={{fontSize:70}}>▦</div><p className="muted">Valid for today's active shuttle trip</p></div></div>}

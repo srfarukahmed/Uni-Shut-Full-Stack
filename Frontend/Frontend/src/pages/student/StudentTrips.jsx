@@ -1,0 +1,8 @@
+import { useEffect, useMemo, useState } from 'react'
+import PageHeader from '../../components/PageHeader'
+import TripCard from '../../components/TripCard'
+import EmptyState from '../../components/EmptyState'
+import Icon from '../../components/Icon'
+import { api } from '../../services/mockApi'
+
+export default function StudentTrips(){const [q,setQ]=useState('');const [items,setItems]=useState([]);const [routes,setRoutes]=useState([]);const [buses,setBuses]=useState([]);useEffect(()=>{Promise.all([api.getTrips(),api.getRoutes(),api.getBuses()]).then(([t,r,b])=>{setItems(t);setRoutes(r);setBuses(b)})},[]);const rm=useMemo(()=>Object.fromEntries(routes.map(x=>[x.id,x])),[routes]);const bm=useMemo(()=>Object.fromEntries(buses.map(x=>[x.id,x])),[buses]);const filtered=items.filter(t=>{const text=`${rm[t.routeId]?.name||''} ${bm[t.busId]?.number||''}`.toLowerCase();return t.status==='SCHEDULED'&&text.includes(q.toLowerCase())});return <><PageHeader eyebrow="Reservations" title="Browse upcoming trips" description="Search by route or bus number and inspect seat availability before reserving."/><div className="surface card" style={{marginBottom:20}}><label className="label">Search trips<div className="row"><Icon name="search"/><input className="input" placeholder="e.g. Dhanmondi or BUS-01" value={q} onChange={e=>setQ(e.target.value)}/></div></label></div>{filtered.length?<div className="grid grid-2">{filtered.map(t=><TripCard key={t.id} trip={t} route={rm[t.routeId]} bus={bm[t.busId]} actionTo={`/student/trips/${t.id}`}/>)}</div>:<EmptyState icon="🔎" title="No matching trips" text="Try another route or clear the search."/>}</>}

@@ -1,0 +1,7 @@
+import { useEffect, useMemo, useState } from 'react'
+import PageHeader from '../../components/PageHeader'
+import StatusBadge from '../../components/StatusBadge'
+import { api } from '../../services/mockApi'
+import { formatDateTime } from '../../utils/format'
+
+export default function AdminReservations(){const [d,setD]=useState(null);useEffect(()=>{Promise.all([api.getReservations(),api.getTrips(),api.getRoutes()]).then(([reservations,trips,routes])=>setD({reservations,trips,routes}))},[]);const maps=useMemo(()=>d?{t:Object.fromEntries(d.trips.map(x=>[x.id,x])),r:Object.fromEntries(d.routes.map(x=>[x.id,x]))}:{},[d]);if(!d)return <div className="surface card"><div className="skeleton"/></div>;return <><PageHeader eyebrow="Admin monitoring" title="Reservations & queue" description="Inspect confirmed seats, boarded records, cancellations and ordered waiting-list positions."/><div className="table-wrap"><table><thead><tr><th>Reservation</th><th>Trip</th><th>Departure</th><th>Serial / Queue</th><th>Status</th></tr></thead><tbody>{d.reservations.map(x=>{const t=maps.t[x.tripId];return <tr key={x.id}><td><strong>{x.id}</strong><div className="muted small">User {x.userId}</div></td><td>{t?maps.r[t.routeId]?.name:'Missing trip'}</td><td>{t?formatDateTime(t.startTime):'—'}</td><td>{x.serialNumber?`Serial #${x.serialNumber}`:x.queuePosition?`Queue #${x.queuePosition}`:'—'}</td><td><StatusBadge value={x.status}/></td></tr>})}</tbody></table></div></>}

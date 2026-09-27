@@ -1,0 +1,1 @@
+export default function StudentAnalytics(){return <div className="page"><h1>📊 Travel Analytics</h1><div className="stats"><div className="card"><h2>24</h2><p>Total Trips</p></div><div className="card"><h2>186 km</h2><p>Travel Distance</p></div><div className="card"><h2>Library Route</h2><p>Favourite Route</p></div></div></div>}
